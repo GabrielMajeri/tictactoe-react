@@ -1,3 +1,52 @@
-*, *:after, *:before {
-	box-sizing: border-box;
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 20px;
+}
+
+ol,
+ul {
+  padding-left: 30px;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+
+.square {
+  float: left;
+  height: 34px;
+  width: 34px;
+  padding: 0;
+
+  margin-top: -1px;
+  margin-right: -1px;
+
+  background: #fff;
+  border: 1px solid #999;
+
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+
+  text-align: center;
+}
+
+.square:hover,
+.square:focus {
+  outline: none;
+  background: #ddd;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+}
+
+.game-info {
+  margin-left: 20px;
 }
