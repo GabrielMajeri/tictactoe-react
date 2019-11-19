@@ -20,23 +20,59 @@ function calculateWinner(squares) {
   return null;
 }
 
-export default function Game() {
+function useGameState() {
   const [history, setHistory] = useState([
     {
       squares: Array(9).fill(null)
     }
   ]);
+
   const [stepNumber, setStep] = useState(0);
   const [xIsNext, setXIsNext] = useState(true);
 
   const current = history[stepNumber];
+  const squares = current.squares;
+  const winner = calculateWinner(current.squares);
+
+  const nextPlayerSymbol = xIsNext ? "X" : "O";
 
   const jumpTo = step => {
     setStep(step);
     setXIsNext(step % 2 === 0);
   };
 
-  const moves = history.map((step, move) => {
+  const updateGameState = i => {
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+
+    const newSquares = current.squares.slice();
+    newSquares[i] = nextPlayerSymbol;
+
+    const newHistory = history.slice(0, stepNumber + 1);
+    setHistory(newHistory.concat([{ squares: newSquares }]));
+    setStep(newHistory.length);
+
+    setXIsNext(!xIsNext);
+  };
+
+  return [
+    {
+      history,
+      squares,
+      stepNumber,
+      winner,
+      nextPlayerSymbol
+    },
+    jumpTo,
+    updateGameState
+  ];
+}
+
+export default function Game() {
+  const [state, jumpTo, updateGameState] = useGameState();
+
+  const moves = state.history.map((_, move) => {
     const label = move ? `Go to move #${move}` : "Go to game start";
     return (
       <li key={move}>
@@ -45,36 +81,19 @@ export default function Game() {
     );
   });
 
-  const nextPlayerSymbol = xIsNext ? "X" : "O";
-
-  const handleClick = i => {
-    const newHistory = history.slice(0, stepNumber + 1);
-    const squares = current.squares;
-
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-
-    const newSquares = squares.slice();
-    newSquares[i] = nextPlayerSymbol;
-    setHistory(newHistory.concat([{ squares: newSquares }]));
-    setStep(newHistory.length);
-    setXIsNext(!xIsNext);
-  };
-
-  const winner = calculateWinner(current.squares);
+  const handleClick = updateGameState;
 
   let status;
-  if (winner) {
-    status = `Winner: ${winner}`;
+  if (state.winner) {
+    status = `Winner: ${state.winner}`;
   } else {
-    status = `Next player: ${nextPlayerSymbol}`;
+    status = `Next player: ${state.nextPlayerSymbol}`;
   }
 
   return (
     <div className="game">
       <div className="game-board">
-        <Board squares={current.squares} onClick={handleClick} />
+        <Board squares={state.squares} onClick={handleClick} />
       </div>
       <div className="game-info">
         <div className="status">{status}</div>
