@@ -3,26 +3,21 @@ import Square from "./Square";
 
 export default function Board({ squares, onClick }) {
   const renderSquare = i => {
-    return <Square value={squares[i]} onClick={() => onClick(i)} />;
+    return <Square key={i} value={squares[i]} onClick={() => onClick(i)} />;
   };
 
-  return (
-    <div>
-      <div className="board-row">
-        {renderSquare(0)}
-        {renderSquare(1)}
-        {renderSquare(2)}
+  let rows = [];
+  for (let i = 0; i < 3; ++i) {
+    let row = [];
+    for (let j = 0; j < 3; ++j) {
+      row.push(renderSquare(i * 3 + j));
+    }
+    rows.push(
+      <div key={i} className="board-row">
+        {row}
       </div>
-      <div className="board-row">
-        {renderSquare(3)}
-        {renderSquare(4)}
-        {renderSquare(5)}
-      </div>
-      <div className="board-row">
-        {renderSquare(6)}
-        {renderSquare(7)}
-        {renderSquare(8)}
-      </div>
-    </div>
-  );
+    );
+  }
+
+  return <div>{rows}</div>;
 }
