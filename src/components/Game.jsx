@@ -23,7 +23,8 @@ function calculateWinner(squares) {
 function useGameState() {
   const [history, setHistory] = useState([
     {
-      squares: Array(9).fill(null)
+      squares: Array(9).fill(null),
+      move: null
     }
   ]);
 
@@ -50,7 +51,7 @@ function useGameState() {
     newSquares[i] = nextPlayerSymbol;
 
     const newHistory = history.slice(0, stepNumber + 1);
-    setHistory(newHistory.concat([{ squares: newSquares }]));
+    setHistory(newHistory.concat([{ squares: newSquares, move: i }]));
     setStep(newHistory.length);
 
     setXIsNext(!xIsNext);
@@ -72,11 +73,20 @@ function useGameState() {
 export default function Game() {
   const [state, jumpTo, updateGameState] = useGameState();
 
-  const moves = state.history.map((_, move) => {
-    const label = move ? `Go to move #${move}` : "Go to game start";
+  const moves = state.history.map(({ move }, moveIdx) => {
+    let label;
+    if (moveIdx === 0) {
+      label = "Go to game start";
+    } else {
+      const row = 1 + Math.floor(move / 3);
+      const col = 1 + (move % 3);
+
+      label = `Go to move #${moveIdx}: (${col}, ${row})`;
+    }
+
     return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{label}</button>
+      <li key={moveIdx}>
+        <button onClick={() => jumpTo(moveIdx)}>{label}</button>
       </li>
     );
   });
