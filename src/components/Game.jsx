@@ -74,6 +74,8 @@ export default function Game() {
   const [state, jumpTo, updateGameState] = useGameState();
 
   const moves = state.history.map(({ move }, moveIdx) => {
+    const selected = moveIdx === state.stepNumber;
+
     let label;
     if (moveIdx === 0) {
       label = "Go to game start";
@@ -86,7 +88,12 @@ export default function Game() {
 
     return (
       <li key={moveIdx}>
-        <button onClick={() => jumpTo(moveIdx)}>{label}</button>
+        <button
+          className={selected ? "selected" : null}
+          onClick={() => jumpTo(moveIdx)}
+        >
+          {label}
+        </button>
       </li>
     );
   });
