@@ -72,6 +72,7 @@ function useGameState() {
 
 export default function Game() {
   const [state, jumpTo, updateGameState] = useGameState();
+  const [sortDescending, setSortDescending] = useState(false);
 
   const moves = state.history.map(({ move }, moveIdx) => {
     const selected = moveIdx === state.stepNumber;
@@ -98,7 +99,15 @@ export default function Game() {
     );
   });
 
+  if (sortDescending) {
+    moves.reverse();
+  }
+
   const handleClick = updateGameState;
+
+  const handleSortOrderChange = evt => {
+    setSortDescending(evt.target.checked);
+  };
 
   let status;
   if (state.winner) {
@@ -114,7 +123,16 @@ export default function Game() {
       </div>
       <div className="game-info">
         <div className="status">{status}</div>
-        <ol>{moves}</ol>
+        <div>
+          <input
+            type="checkbox"
+            id="sort-order"
+            checked={sortDescending}
+            onChange={handleSortOrderChange}
+          />{" "}
+          <label htmlFor="sort-order">Sort descending</label>
+        </div>
+        <ol reversed={sortDescending}>{moves}</ol>
       </div>
     </div>
   );
