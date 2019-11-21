@@ -20,6 +20,14 @@ function calculateWinner(squares) {
       };
     }
   }
+
+  if (squares.every(square => square !== null)) {
+    return {
+      symbol: "",
+      line: []
+    };
+  }
+
   return null;
 }
 
@@ -116,6 +124,8 @@ export default function Game() {
   let status;
   if (state.winner) {
     status = `Winner: ${state.winner}`;
+  } else if (state.winner === "") {
+    status = "Draw";
   } else {
     status = `Next player: ${state.nextPlayerSymbol}`;
   }
