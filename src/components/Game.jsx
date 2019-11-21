@@ -14,7 +14,10 @@ function calculateWinner(squares) {
   ];
   for (const [a, b, c] of lines) {
     if (squares[a] && squares[a] === squares[b] && squares[b] === squares[c]) {
-      return squares[a];
+      return {
+        symbol: squares[a],
+        line: [a, b, c]
+      };
     }
   }
   return null;
@@ -62,7 +65,8 @@ function useGameState() {
       history,
       squares,
       stepNumber,
-      winner,
+      winner: winner ? winner.symbol : null,
+      winningLine: winner ? winner.line : [],
       nextPlayerSymbol
     },
     jumpTo,
@@ -119,7 +123,11 @@ export default function Game() {
   return (
     <div className="game">
       <div className="game-board">
-        <Board squares={state.squares} onClick={handleClick} />
+        <Board
+          squares={state.squares}
+          highlighted={state.winningLine}
+          onClick={handleClick}
+        />
       </div>
       <div className="game-info">
         <div className="status">{status}</div>
